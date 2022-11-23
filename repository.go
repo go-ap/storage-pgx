@@ -1,5 +1,3 @@
-//go:build storage_pgx || storage_all || (!storage_boltdb && !storage_fs && !storage_badger && !storage_sqlite)
-
 package pgx
 
 import (
@@ -12,10 +10,10 @@ import (
 	vocab "github.com/go-ap/activitypub"
 	"github.com/go-ap/errors"
 	ap "github.com/go-ap/fedbox/activitypub"
-	"github.com/go-ap/fedbox/internal/log"
 	"github.com/go-ap/fedbox/storage"
 	"github.com/go-ap/jsonld"
 	"github.com/go-ap/processing"
+	"github.com/go-ap/storage-pgx/internal/log"
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
 )

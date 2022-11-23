@@ -1,5 +1,3 @@
-//go:build storage_pgx || storage_all || (!storage_boltdb && !storage_fs && !storage_badger && !storage_sqlite)
-
 package pgx
 
 import (
@@ -7,8 +5,7 @@ import (
 
 	"git.sr.ht/~mariusor/lw"
 	"github.com/go-ap/errors"
-	"github.com/go-ap/fedbox/internal/config"
-	"github.com/go-ap/fedbox/internal/log"
+	"github.com/go-ap/storage-pgx/internal/log"
 	"github.com/jackc/pgx"
 )
 
@@ -18,13 +15,13 @@ func openConn(c pgx.ConnConfig) (*pgx.Conn, error) {
 	return pgx.Connect(c)
 }
 
-func Bootstrap(opt config.Options, rootUser string, rootPw []byte) error {
+func Bootstrap(opt Config, rootUser string, rootPw []byte) error {
 	logger := lw.Dev(lw.SetLevel(lw.DebugLevel))
 	var conn *pgx.Conn
 	var err error
 
 	// @todo(marius): we're no longer loading SQL db config env variables
-	conf := config.BackendConfig{}
+	conf := BackendConfig{}
 	if conf.User == "" {
 		return errors.Newf("empty user")
 	}
@@ -102,13 +99,21 @@ func Bootstrap(opt config.Options, rootUser string, rootPw []byte) error {
 	return nil
 }
 
-func Clean(opt config.Options, rootUser string, rootPw []byte) error {
-	logger := lw.Dev(lw.SetLevel(opt.LogLevel))
+type BackendConfig struct {
+	User string
+	Name string
+	Host string
+	Pw   string
+	Port int
+}
+
+func Clean(opt Config, rootUser string, rootPw []byte) error {
+	logger := lw.Dev(lw.SetLevel(lw.DebugLevel))
 	var conn *pgx.Conn
 	var err error
 
 	// @todo(marius): we're no longer loading SQL db config env variables
-	conf := config.BackendConfig{}
+	conf := BackendConfig{}
 	if conf.User == "" {
 		return errors.Newf("empty user")
 	}
